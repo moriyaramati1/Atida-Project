@@ -1,0 +1,28 @@
+version: '3'
+services:
+  application:
+    build: .
+    ports:
+      - '5000:5000'
+    depends_on:
+      - database
+    environment:
+      - POSTGRES_HOST=database
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=
+
+  database:
+    image: postgres:latest
+    container_name: postgres-container
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=
+
+    volumes:
+      - db:/var/lib/postgresql/data
+volumes:
+  db:
+    driver: local

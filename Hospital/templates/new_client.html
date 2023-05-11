@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="../static/css/new_client.css" rel="stylesheet"/>
+
+</head>
+<body>
+
+<div class="container">
+
+    <form dir="rtl">
+
+        <div class="row">
+            <h1>מטופל חדש</h1>
+            <h4>פרטי המטופל</h4>
+            <div class="input-group input-group-icon">
+                <input type="text" name="id" placeholder="תעודת זהות"/>
+
+                <div class="input-icon"><i class="fa fa-user"></i></div>
+
+            </div>
+            <div class="input-group input-group-icon">
+                <input type="text" name="fullName" placeholder="שם מלא"/>
+                <div class="input-icon"><i class="fa fa-user"></i></div>
+            </div>
+
+            <div class="input-group input-group-icon">
+                <input type="text" name="address" placeholder="כתובת"/>
+                <div class="input-icon"><i class="fa fa-envelope"></i></div>
+            </div>
+
+            <div class="input-group input-group-icon">
+                <input type="text" name="telephone" placeholder="מספר טלפון נייח "/>
+                <div class="input-icon"><i class="fa fa-user"></i></div>
+            </div>
+            <div class="input-group input-group-icon">
+                <input type="text" name="cellphone" placeholder="מספר פלאפון נייד"/>
+                <div class="input-icon"><i class="fa fa-user"></i></div>
+            </div>
+        </div>
+        <div class="row">
+            <h4>תאריך לידה</h4>
+            <input type="date" id="birthday" name="birthday">
+            <br>
+            <h4>העלאת תמונה</h4>
+            <div class="profile">
+                <div class="card">
+                    <img src="../static/images/profile.png" id="profile-pic">
+                    <label for="input-file">עדכן תמונה</label>
+                    <input name="img" type="file" accept="image/*" id="input-file">
+
+                </div>
+            </div>
+            <br>
+        </div>
+
+        <input class="submit" type="submit"/>
+
+    </form>
+</div>
+<script>
+
+      document.getElementById('input-file').onchange = function() {
+          var url = URL.createObjectURL(this.files[0]);
+          console.log(url);
+          document.getElementById('profile-pic').src = url;
+      };
+
+
+</script>
+</body>
+</html>
+

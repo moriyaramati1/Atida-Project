@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="../static/css/new_client.css" rel="stylesheet"/>
+    <script src="../static/js/covid.js" defer></script>
+</head>
+<body>
+
+<div class="container">
+
+    <form dir="rtl" action="/new_covid">
+
+        <div class="row">
+            <h1>רשומה חדשה</h1>
+            <h4>פרטי המטופל</h4>
+            <div class="input-group input-group-icon">
+                <input type="text" name="id" placeholder="תעודת זהות" required/>
+                <div class="input-icon"><i class="fa fa-user"></i></div>
+            </div>
+            <br><br>
+            <label for="vaccination_number">בחרת את מספר החיסונים שהתחסנת 0-4:</label>
+            <input name="vaccination_number" type="number" id="vaccination_number" min="0" max="4" required/>
+            <button onclick="handleOption()">אישור</button>
+
+            <div id="vaccine" class="vaccine">
+                <h4>יצרן החיסון</h4>
+                <div id="vaccineInputs">
+                </div>
+            </div>
+
+            <div class="input-group input-group-icon">
+                <h3>מועד קבלת תוצאה חיובית</h3>
+                <input type="date" name="positive">
+
+                <div class="input-icon"><i class="fa fa-envelope"></i></div>
+            </div>
+            <div class="input-group input-group-icon">
+                <h3>מועד החלמה מהמחלה</h3>
+                <input type="date" name=recovery>
+
+                <div class="input-icon"><i class="fa fa-envelope"></i></div>
+            </div>
+
+            <br><br>
+            <button class="submit">אישור</button>
+        </div>
+
+    </form>
+</div>
+</body>
+</html>
+
+
+

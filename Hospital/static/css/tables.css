@@ -1,0 +1,33 @@
+
+h1{
+    width:500px;
+    margin: 0 auto;
+    text-align: center;
+    font: italic Georgia, serif;
+    font-size: 400%;
+    }
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th {
+  background-color: #5899FA;
+  color: white;
+
+}
+
+tr:hover {background-color: #A5EEDD;}
+table {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
+  border-collapse: collapse;
+  width: 50%;
+
+}
+
+th, td {
+
+  font-family: Arial, Helvetica, sans-serif;  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
