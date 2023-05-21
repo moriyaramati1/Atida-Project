@@ -9,12 +9,12 @@
 
 <div class="container">
 
-    <form dir="rtl" action="/new_covid">
+    <form dir="rtl" method="post">
 
         <div class="row">
             <h1>רשומה חדשה</h1>
             <h4>פרטי המטופל</h4>
-            <div class="input-group input-group-icon">
+            <div >
                 <input type="text" name="id" placeholder="תעודת זהות" required/>
                 <div class="input-icon"><i class="fa fa-user"></i></div>
             </div>
@@ -29,17 +29,14 @@
                 </div>
             </div>
 
-            <div class="input-group input-group-icon">
+            <div>
                 <h3>מועד קבלת תוצאה חיובית</h3>
-                <input type="date" name="positive">
+                <input type="date" name="positive" id ="positive"  onchange="enableDisableEndDate()">
 
-                <div class="input-icon"><i class="fa fa-envelope"></i></div>
             </div>
             <div class="input-group input-group-icon">
                 <h3>מועד החלמה מהמחלה</h3>
-                <input type="date" name=recovery>
-
-                <div class="input-icon"><i class="fa fa-envelope"></i></div>
+                <input type="date" name=recovery id="recovery" disabled >
             </div>
 
             <br><br>

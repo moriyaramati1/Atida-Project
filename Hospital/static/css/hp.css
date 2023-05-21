@@ -2,13 +2,6 @@ body{
     background-color: #f0f5f5;
 }
 
-div.gallery {
-  background-color: #527a7a;
-  height: 150px;
-  width: 150px;
-  border-radius: 20px; # עד כמה המסגרת תהיה מעוגלת
-  border: 1px solid #ccc; #הצבע של המסגרת הגדולה
- }
 h1{
     color: #5899FA;
     height: 140px;
@@ -17,24 +10,6 @@ h1{
     width:500px;
     margin: 50px auto 60px auto; /* top | right | bottom | left */
     text-align: center;
-}
-div.gallery:hover {
-  width: 150px;
-  height: 90%;
-  border: 1px solid #777;
-}
-
-div.gallery img {
-
-  border: 1px solid #80aaff;
-  border-width: 5px;
-  border-radius: 20px;
-  width: 140px;
-  height: 100px;
-  margin-left: auto;
-  margin-right: 0;
-  position: center;
-  align: center;
 }
 
 button{
@@ -65,11 +40,7 @@ button img {
   width: 150px;
   height: 100px;
   margin-right:800px;
-
-
 }
-
-
 
 * {
 
@@ -77,12 +48,11 @@ box-sizing: content-box;width: 100%;
 
 }
 .responsive {
-
   float: right;
   align: center;
   width: 15%; /* width of each img */
   margin: 0 auto;
-  }
+}
 
 @media only screen and (max-width: 700px) {
   .responsive {

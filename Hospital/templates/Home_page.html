@@ -8,12 +8,10 @@
 </head>
 <body dir="auto">
 <h1>HMO - COVID</h1>
-<form method="POST" action="/new_client">
+<form method="GET" action="/new_client">
     <div class="responsive">
         <button type="submit" class="btn btn-info btn-lg">
-            <a target="_blank" href="img_5terre.jpg">
-                <img src="../static/images/newpatient.png" alt="Cinque Terre">
-            </a>
+            <img src="../static/images/newpatient.png" alt="Cinque Terre">
             טופס מטופל חדש
         </button>
 
@@ -21,12 +19,10 @@
 </form>
 
 
-<form method="POST" action="/new_covid">
+<form method="GET" action="/new_covid">
     <div class="responsive">
         <button type="submit" class="btn btn-info btn-lg">
-            <a target="_blank" href="img_5terre.jpg">
-                <img src="../static/images/covid.png" alt="Cinque Terre">
-            </a>
+            <img src="../static/images/covid.png" alt="Cinque Terre">
             קליטת רשומת קורונה
         </button>
 
@@ -34,48 +30,40 @@
 </form>
 
 
-<form action="/active_patient">
+<form method="GET" action="/active_patient">
     <div class="responsive">
         <button type="submit" class="btn btn-info btn-lg">
-            <a target="_blank" href="img_5terre.jpg">
-                <img src="../static/images/statistic.jpeg" alt="Cinque Terre">
-            </a>
+             <img src="../static/images/statistic.jpeg" alt="Cinque Terre">
             סטטיסטיקה חודשית
         </button>
 
     </div>
 </form>
 
-<form action="/not_vaccinated">
+<form method="GET" action="/not_vaccinated">
     <div class="responsive">
         <button type="submit" class="btn btn-info btn-lg">
-            <a target="_blank" href="img_5terre.jpg">
-                <img src="../static/images/vaccine.jpeg" alt="Cinque Terre">
-            </a>
+            <img src="../static/images/vaccine.jpeg" alt="Cinque Terre">
             מסורבי חיסון
         </button>
 
     </div>
 </form>
 
-<form action="/retrieve_members">
+<form method="GET" action="/retrieve_members">
     <div class="responsive">
         <button type="submit" class="btn btn-info btn-lg">
-            <a target="_blank" href="img_5terre.jpg">
-                <img src="../static/images/people.png" alt="Cinque Terre">
-            </a>
+            <img src="../static/images/people.png" alt="Cinque Terre">
             מאגר החולים
         </button>
 
     </div>
 </form>
 
-<form action="/retrieve_covid">
+<form method="GET" action="/retrieve_covid">
     <div class="responsive">
         <button type="submit" class="btn btn-info btn-lg">
-            <a target="_blank" href="img_5terre.jpg">
-                <img src="../static/images/dbcovid.png" alt="Cinque Terre">
-            </a>
+            <img src="../static/images/dbcovid.png" alt="Cinque Terre">
             מאגר קורונה
         </button>
     </div>

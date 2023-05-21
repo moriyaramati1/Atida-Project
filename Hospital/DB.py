@@ -1,4 +1,5 @@
 import datetime
+import os
 import psycopg2
 import pandas as pd
 import calendar
@@ -7,14 +8,14 @@ import numpy as np
 
 
 class SqlDB:
-    def __init__(self, tabel1='members', tabel2='covid', key='ID'):
+    def __init__(self, table1='members', table2='covid', key='ID'):
         '''
         :param tabel1: Patients data
         :param tabel2: Covid data
         :param key: ID
         '''
-        self.MEMBERS_TABLE = tabel1
-        self.COVID_TABLE = tabel2
+        self.MEMBERS_TABLE = table1
+        self.COVID_TABLE = table2
         self.primary_key = key
         self.conn = None
         self.cursor = None
@@ -87,12 +88,14 @@ class SqlDB:
             query = f"SELECT column_name FROM information_schema.columns WHERE table_name   = '{table}';"
             self.cursor.execute(query)
             table_column_names = [col[0].upper() for col in self.cursor]
-            dict_keys = [key.upper() for key in dict.keys()]
 
             dict = {key.upper(): val for (key, val) in dict.items()}
 
             if self.primary_key not in dict.keys():
                 raise ValueError("Information missing primary key")
+
+            if not self.is_valid(dict[self.primary_key]):
+                raise ValueError("Invalid ID")
 
             if table == self.MEMBERS_TABLE:
                 for element in table_column_names:
@@ -137,18 +140,23 @@ class SqlDB:
         :function: create df with table names, gets the data from sql, and create html file with that table information.
         '''
         try:
-            query = f"SELECT column_name FROM information_schema.columns WHERE table_name   = '{table}';"
-            self.cursor.execute(query)
-            table_column_names = [col[0].upper() for col in self.cursor]
-            df = pd.DataFrame(columns=table_column_names)
+            # query = f"SELECT column_name FROM information_schema.columns WHERE table_name   = '{table}';"
+            # self.cursor.execute(query)
+            # table_column_names = [col[0].upper() for col in self.cursor]
+            # df = pd.DataFrame(columns=table_column_names)
+            # query = f"SELECT * FROM {table}"
+            # self.cursor.execute(query)
+            # result = self.cursor.fetchall()
+            # for i, x in enumerate(result):
+            #     df.loc[i] = list(x)
+            #
+            # df['ID'] = df['ID'].astype(int)
+            # data_html = df.to_html(index=False)
 
             query = f"SELECT * FROM {table}"
-            self.cursor.execute(query)
-            result = self.cursor.fetchall()
-
-            for i, x in enumerate(result):
-                df.loc[i] = list(x)
-
+            df = pd.read_sql(query, self.conn)
+            columns = {col:col.upper() for col in df.columns}
+            df.rename(columns=columns,inplace=True)
             df['ID'] = df['ID'].astype(int)
             data_html = df.to_html(index=False)
 
@@ -176,29 +184,40 @@ class SqlDB:
         '''
         :function: create a bar-plot graph of all patients number on each day at the last month.
         '''
+        fig_path ='./static/images/active_patient.png'
+        if os.path.exists(fig_path):
+            os.remove(fig_path)
+
         month = str(datetime.datetime.today().month)
         year = str(datetime.datetime.today().year)
 
-        query = f"""SELECT positive_result_date,recovery_date from covid" \
-                "WHERE (Extract(MONTH from positive_result_date) = {month} AND Extract(YEAR from recovery_date) = {year})"""
+        # query = f"""SELECT positive_result_date,recovery_date from covid" \
+        #         "WHERE (Extract(MONTH from positive_result_date) = {month} AND Extract(YEAR from recovery_date) = {year})"""
+
+        query = f"""SELECT positive_result_date,recovery_date from covid 
+                    WHERE ( Extract(YEAR from positive_result_date) = {year} AND Extract(YEAR from recovery_date) = {year} AND
+                    Extract(MONTH from positive_result_date) <=  {month} AND Extract(MONTH from recovery_date) >=  {month} )"""
+
+        first_day = datetime.datetime.strptime(f'''01-0{month}-{year}''', '%d-%m-%Y').date()
+        days = calendar.monthrange(int(year), int(month))[1]
+        last_day = datetime.datetime.strptime(f'''{days}-0{month}-{year}''', '%d-%m-%Y').date()
+
+
         try:
             df = pd.read_sql(query, self.conn)
             if not df.empty:
                 df = df.dropna()
             if not df.empty:
                 start_dates = df.positive_result_date
+                start_dates = start_dates.apply(lambda x: first_day if x.month < int(month) else x)
                 end_dates = df.recovery_date
+                end_dates = end_dates.apply(lambda x: last_day if x.month > int(month) else x)
+                data = pd.DataFrame(dt.date().day for group in [pd.date_range(start, end) for start, end in zip(start_dates, end_dates)] for dt in group).value_counts()
 
-                data = pd.DataFrame(dt.date().day for group in
-                                    [pd.date_range(start, end) for start, end in zip(start_dates, end_dates)]
-                                    for dt in group).value_counts()
-                days = calendar.monthrange(int(year), int(month))[1]
                 if data is not None:
-                    print("data", data)
                     x_data = [x[0] for x in data.index]
                     y_data = [y for y in data]
-                    print("y_data", y_data)
-                    x_axis = np.arange(1, days)
+                    x_axis = np.arange(1, days+1)
                     y_axis = np.arange(0, max(y_data) + 1)
 
                     colors = ['#63A6FF', '#FF6666', '#99FFCC']
@@ -215,7 +234,7 @@ class SqlDB:
                     plt.ylabel('Number Of People')
                     plt.title(f'Active Patients {month} Month')
 
-                    plt.savefig('./static/images/active_patient.png', dpi=1200)
+                    plt.savefig(fig_path, dpi=1200)
                 else:
                     raise ValueError("There is no data available")
             else:
@@ -244,5 +263,25 @@ class SqlDB:
         except Exception as error:
             self.conn.rollback()
             raise error
+
+
+    def is_valid(self,id):
+        if len(id) < 9:
+            return False
+        else:
+            check_digit = int(id[0])
+            sum = 0
+            for i in range(1, len(id)):
+                if i % 2 != 0:  # odd position
+                    digit = int(id[i]) * 2
+                    if digit // 10 != 0:
+                        sum += digit % 10 + digit // 10
+                    else:
+                        sum += digit
+                else:
+                    sum += int(id[i])
+
+        return (10 - sum) % 10 == check_digit
+
 
 

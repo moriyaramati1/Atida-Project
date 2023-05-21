@@ -16,6 +16,7 @@ db_password = os.environ.get('POSTGRES_PASSWORD', 'postgres')
 db_name = os.environ.get('POSTGRES_DB', 'postgres')
 
 conn = DB.connect(user=db_user, password=db_password, host=db_host, port=db_port, database=db_name)
+# conn = DB.connect(user='postgres', password='9580', host='localhost', port='5432', database='postgres')
 
 DB.create_tables()
 
@@ -25,51 +26,50 @@ def route():
     return render_template("Home_page.html")
 
 
-@app.route('/new_client', methods=['POST', 'GET'])
+@app.route('/new_client', methods=["POST", "GET"])
 def new_client():
-    if request.method == 'GET':
+    if request.method == "POST":
         try:
             prams = {
-                "id": int(request.args.get('id')),
-                "full_name": None if request.args.get('fullName') == '' else request.args.get('fullName'),
-                "address": None if request.args.get('address') == '' else request.args.get('address'),
-                "phone_number": None if request.args.get('telephone') == '' else request.args.get('telephone'),
-                "cell_phone": None if request.args.get('cellphone') == '' else request.args.get('cellphone'),
-                "date_of_birth": None if request.args.get('birthday') == '' else request.args.get('birthday')
+                "id": request.form.get('id'),
+                "full_name": None if request.form.get('fullName') == '' else request.form.get('fullName'),
+                "address": None if request.form.get('address') == '' else request.form.get('address'),
+                "phone_number": None if request.form.get('telephone') == '' else request.form.get('telephone'),
+                "cell_phone": None if request.form.get('cellphone') == '' else request.form.get('cellphone'),
+                "date_of_birth": None if request.form.get('birthday') == '' else request.form.get('birthday')
             }
-
             DB.append_record(DB.MEMBERS_TABLE, prams)
         except errors.lookup(UNIQUE_VIOLATION) as _:
             return render_template("fail.html", error="This ID already exists in the database")
         except Exception as e:
             return render_template("fail.html", error=e)
         return render_template("success.html")
-
-    return render_template("new_client.html")
+    else:
+        return render_template("new_client.html")
 
 
 @app.route('/new_covid', methods=['POST', 'GET'])
 def new_covid():
-    if request.method == 'GET':
-        vaccination_number = int(request.args.get('vaccination_number'))
+    if request.method == 'POST':
+        vaccination_number = int(request.form.get('vaccination_number'))
 
         manufacturer = ''
         vaccination_date = ''
         for i in range(1, vaccination_number + 1):
             key = "vaccine_" + str(i)
-            manufacturer += request.args.get(key + "_manufacturer") + " , "
-            vaccination_date += request.args.get(key + "_date") + " , "
+            manufacturer += request.form.get(key + "_manufacturer") + " , "
+            vaccination_date += request.form.get(key + "_date") + " , "
 
         if len(manufacturer) > 0:
             manufacturer = manufacturer[:-2]
             vaccination_date = vaccination_date[:-2]
-        print(type(request.args.get('positive')))
+        print(type(request.form.get('positive')))
         prams = {
-            "id": request.args.get('id'),
+            "id": request.form.get('id'),
             "vaccination_date": None if vaccination_date == '' else vaccination_date,
             "manufacturer": None if manufacturer == '' else manufacturer,
-            "positive_result_date": None if request.args.get('positive') == '' else request.args.get('positive'),
-            "recovery_date": None if request.args.get('recovery') == '' else request.args.get('recovery')
+            "positive_result_date": None if request.form.get('positive') == '' else request.form.get('positive'),
+            "recovery_date": None if request.form.get('recovery') == '' else request.form.get('recovery')
         }
         try:
             DB.append_record(DB.COVID_TABLE, prams)
@@ -78,7 +78,8 @@ def new_covid():
         except Exception as e:
             return render_template("fail.html", error=e)
         return render_template("success.html")
-    return render_template("new_covid.html")
+    else:
+        return render_template("new_covid.html")
 
 
 @app.route('/retrieve_members', methods=['GET'])
