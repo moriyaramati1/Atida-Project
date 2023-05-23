@@ -140,18 +140,6 @@ class SqlDB:
         :function: create df with table names, gets the data from sql, and create html file with that table information.
         '''
         try:
-            # query = f"SELECT column_name FROM information_schema.columns WHERE table_name   = '{table}';"
-            # self.cursor.execute(query)
-            # table_column_names = [col[0].upper() for col in self.cursor]
-            # df = pd.DataFrame(columns=table_column_names)
-            # query = f"SELECT * FROM {table}"
-            # self.cursor.execute(query)
-            # result = self.cursor.fetchall()
-            # for i, x in enumerate(result):
-            #     df.loc[i] = list(x)
-            #
-            # df['ID'] = df['ID'].astype(int)
-            # data_html = df.to_html(index=False)
 
             query = f"SELECT * FROM {table}"
             df = pd.read_sql(query, self.conn)
@@ -190,9 +178,6 @@ class SqlDB:
 
         month = str(datetime.datetime.today().month)
         year = str(datetime.datetime.today().year)
-
-        # query = f"""SELECT positive_result_date,recovery_date from covid" \
-        #         "WHERE (Extract(MONTH from positive_result_date) = {month} AND Extract(YEAR from recovery_date) = {year})"""
 
         query = f"""SELECT positive_result_date,recovery_date from covid 
                     WHERE ( Extract(YEAR from positive_result_date) = {year} AND Extract(YEAR from recovery_date) = {year} AND
@@ -266,6 +251,7 @@ class SqlDB:
 
 
     def is_valid(self,id):
+        # https://en.wikipedia.org/wiki/Luhn_algorithm
         if len(id) < 9:
             return False
         else:

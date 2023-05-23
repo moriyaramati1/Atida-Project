@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template,Response
 from flask import request
 from psycopg2.errorcodes import UNIQUE_VIOLATION
 from psycopg2 import errors
@@ -40,10 +40,10 @@ def new_client():
             }
             DB.append_record(DB.MEMBERS_TABLE, prams)
         except errors.lookup(UNIQUE_VIOLATION) as _:
-            return render_template("fail.html", error="This ID already exists in the database")
+            return render_template("fail.html", error="This ID already exists in the database"), 422
         except Exception as e:
-            return render_template("fail.html", error=e)
-        return render_template("success.html")
+            return render_template("fail.html", error=e),400
+        return render_template("success.html"),201
     else:
         return render_template("new_client.html")
 
@@ -63,7 +63,6 @@ def new_covid():
         if len(manufacturer) > 0:
             manufacturer = manufacturer[:-2]
             vaccination_date = vaccination_date[:-2]
-        print(type(request.form.get('positive')))
         prams = {
             "id": request.form.get('id'),
             "vaccination_date": None if vaccination_date == '' else vaccination_date,
@@ -74,10 +73,10 @@ def new_covid():
         try:
             DB.append_record(DB.COVID_TABLE, prams)
         except errors.lookup(UNIQUE_VIOLATION) as _:
-            return render_template("fail.html", error="This ID already exists in the database")
+            return Response(render_template("fail.html", error="This ID already exists in the database")), 422
         except Exception as e:
-            return render_template("fail.html", error=e)
-        return render_template("success.html")
+            return render_template("fail.html", error=e), 400
+        return render_template("success.html"),201
     else:
         return render_template("new_covid.html")
 
@@ -99,7 +98,7 @@ def not_vaccinated():
     try:
         number = DB.not_vaccinated()
     except Exception as e:
-        return render_template("fail.html", error=e)
+        return render_template("fail.html", error=e), 400
     return render_template("not_vaccinated.html", count=number)
 
 
@@ -108,7 +107,7 @@ def active_patient():
     try:
         DB.active_patient()
     except Exception as e:
-        return render_template("fail.html", error=e)
+        return render_template("fail.html", error=e), 400
     return '<h1 style ="text-align: center"> Active Patients For Each Day Per Specific Month</h1>' \
            '<center><img src="static/images/active_patient.png" width=600 "></center>'
 
